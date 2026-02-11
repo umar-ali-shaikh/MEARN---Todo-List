@@ -1,0 +1,13 @@
+{
+  "name": "mern-project1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix Backhand && npm install --prefix Frontend && npm run build --prefix Frontend",
+    "start": "npm run start --prefix Backhand"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

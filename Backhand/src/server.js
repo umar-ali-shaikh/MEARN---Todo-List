@@ -9,17 +9,24 @@ const cors = require("cors");
 const connectDB = require("./config/db.js");
 const notesRoutes = require("./routes/notesRoutes");
 const ratelimiter = require("./middleware/rateLimiter.js");
+const path = require("path");
+
 
 dotenv.config();
+console.log("NODE_ENV:", process.env.NODE_ENV);
 
 const app = express();
 const PORT = process.env.PORT || 5002;
 
+
+
 // ✅ CORS FIRST
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-}));
+if (process.env.NODE_ENV !== "production") {
+  app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }));
+}
 
 app.use(express.json());
 
@@ -29,11 +36,27 @@ app.use("/api", ratelimiter);
 
 
 // Routes
-app.get("/", (req, res) => {
-  res.status(200).json({ message: "Server is running ✅" });
-});
+if (process.env.NODE_ENV !== "production") {
+  app.get("/", (req, res) => {
+    res.status(200).json({ message: "Server is running ✅" });
+  });
+}
+
 
 app.use("/api/notes", notesRoutes);
+
+
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = path.join(__dirname, "../../Frontend/dist");
+
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
+}
+
+
 
 // DB + Server start
 connectDB().then(() => {
