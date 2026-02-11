@@ -1,4 +1,4 @@
-import ZapIcon from "lucide-zap";
+import { ZapIcon } from "lucide-react"; 
 
 const RateLimitedUi = () => {
     return (
